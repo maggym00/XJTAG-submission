@@ -19,7 +19,7 @@ bool IsValid(string const& test);
 
 vector<int> PrimeList(int upper_limit);
 
-pair<int,int> FindSum(vector<int> const& primes,int number);
+vector<pair<int,int>> FindSum(vector<int> const& primes,int number);
 
 
 
@@ -37,10 +37,11 @@ int main(int argc, const char * argv[]) {
 
     vector<int> primes = PrimeList(intInput);
     
-    pair<int,int> sum=FindSum(primes,intInput);
+    vector<pair<int,int>> sums = FindSum(primes,intInput);
     
-    cout<<sum.first<<" + "<<sum.second<<" = "<<intInput<<endl;
-    
+    for(pair<int,int> s:sums){
+        cout<<s.first<<" + "<<s.second<<" = "<<intInput<<endl;
+    }
     
     
     
@@ -102,32 +103,30 @@ vector<int> PrimeList(int upper_limit){
     return primes;
 }
 
-pair<int,int> FindSum(vector<int> const& primes,int number){
+vector<pair<int,int>> FindSum(vector<int> const& primes,int number){
     //set a counter for the start of list of primes
     int i=0;
     //set a counter for end of list of primes
     int j=primes.size()-1;
     
-    while(primes[i]+primes[j]!=number){
+    vector<pair<int,int>> sums;
+    while(i<j){
 
         // if the sum of the lower prime plus the higher prime is > number, decrease the value of the higher prime
         if(primes[i]+primes[j]>number){
             j--;
         }
         // if the sum of the lower prime plus the higher prime is < number, increase the value of the lower prime
-        else{
+        else if(primes[i]+primes[j]<number){
             i++;
         }
-        
-        // if the lower prime value passes the higher prime value - something has gone wrong
-        // this should never happen - used for error checking
-        if(i>j){
-            cout<<"error - sum not found"<<endl;
-            pair<int,int> error = {0,0};
-            return error;
+        else{
+            pair<int,int> combo = {primes[i],primes[j]};
+            sums.push_back(combo);
+            i++;
         }
     }
     
-    pair<int,int> sum = {primes[i],primes[j]};
-    return sum;
+    
+    return sums;
 }
